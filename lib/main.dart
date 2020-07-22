@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
 
 void main() {
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: TicTacToe()
   ));
 }
