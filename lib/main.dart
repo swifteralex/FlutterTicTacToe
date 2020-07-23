@@ -14,12 +14,11 @@ class TicTacToe extends StatefulWidget {
 
 class _TicTacToeState extends State<TicTacToe> {
 
-  // first digit is position in array + 1 (for mapping purposes), second is mark stored there
   // 0 for blank, 1 for X, 2 for O
   List<int> board = [
-    10, 20, 30,
-    40, 50, 60,
-    70, 80, 90
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0
   ];
   int currentTurn = 1;
   int playerXScore = 0;
@@ -27,12 +26,12 @@ class _TicTacToeState extends State<TicTacToe> {
   int currentNumMarks = 0;
   String turnText = "Player X's turn";
 
-  Widget markToImage(int tile) {
-    if (tile == 0) {
+  Widget markToImage(int mark) {
+    if (mark == 0) {
       return SizedBox();
-    } else if (tile == 1){
+    } else if (mark == 1) {
       return Image.asset('assets/x.png');
-    } else{
+    } else {
       return Image.asset('assets/o.png');
     }
   }
@@ -50,31 +49,27 @@ class _TicTacToeState extends State<TicTacToe> {
 
     // check rows for a win
     for (int i=0; i<3; i++) {
-      if ((board[i*3] % 10) == (board[i*3 + 1] % 10) &&
-          (board[i*3 + 1] % 10) == (board[i*3 + 2] % 10) &&
-          (board[i*3] % 10 != 0)) {
-        startNewRound(board[i*3] % 10);
+      if (board[i*3] == board[i*3 + 1] && board[i*3 + 1] == board[i*3 + 2] && board[i*3] != 0) {
+        startNewRound(board[i*3]);
         return;
       }
     }
 
     // check columns for a win
     for (int i=0; i<3; i++) {
-      if ((board[i] % 10) == (board[i + 3] % 10) &&
-          (board[i + 3] % 10) == (board[i + 6] % 10) &&
-          (board[i] % 10 != 0)) {
-        startNewRound(board[i] % 10);
+      if (board[i] == board[i + 3] && board[i + 3] == board[i + 6] && board[i] != 0) {
+        startNewRound(board[i]);
         return;
       }
     }
 
     // check diagonals for a win
-    if (board[0] % 10 == board[4] % 10 && board[4] % 10 == board[8] % 10 && board[0] % 10 != 0) {
-      startNewRound(board[0] % 10);
+    if (board[0] == board[4] && board[4] == board[8] && board[0] != 0) {
+      startNewRound(board[0]);
       return;
     }
-    if (board[2] % 10 == board[4] % 10 && board[4] % 10 == board[6] % 10 && board[2] % 10 != 0) {
-      startNewRound(board[2] % 10);
+    if (board[2] == board[4] && board[4] == board[6] && board[2] != 0) {
+      startNewRound(board[2]);
       return;
     }
 
@@ -100,8 +95,8 @@ class _TicTacToeState extends State<TicTacToe> {
         currentNumMarks = 0;
         currentTurn = 1;
         turnText = "Player X's turn";
-        for (int i = 0; i < 9; i++) {
-          board[i] = (i + 1) * 10;
+        for (int i=0; i<9; i++) {
+          board[i] = 0;
         }
       });
     });
@@ -175,18 +170,18 @@ class _TicTacToeState extends State<TicTacToe> {
                 GridView.count(
                   shrinkWrap: true,
                   crossAxisCount: 3,
-                  children: board.map((mark) {
+                  children: board.asMap().entries.map((mark) {
                     return FlatButton(
                       onPressed: () {
-                        int buttonIndex = int.parse(mark.toString().substring(0, 1));
-                        if (board[buttonIndex - 1] % 10 == 0 && currentTurn != 0) {
+                        int buttonIndex = mark.key;
+                        if (board[buttonIndex] == 0 && currentTurn != 0) {
                           setState(() {
-                            board[buttonIndex - 1] = buttonIndex * 10 + currentTurn;
+                            board[buttonIndex] = currentTurn;
                             onMarkPress();
                           });
                         }
                       },
-                      child: markToImage(mark % 10),
+                      child: markToImage(mark.value),
                     );
                   }).toList(),
                 )
